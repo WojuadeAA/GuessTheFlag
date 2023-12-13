@@ -46,9 +46,7 @@ struct ContentView: View {
                         Button{
                             flagTapped(number)
                         }label: {
-                            Image(countries[number])
-                                .clipShape(Capsule())
-                                .shadow(radius: 5)
+                            FlagView(country: countries[number])
                         }
                         
                     }.alert(scoreTitle, isPresented: $showingScore){
