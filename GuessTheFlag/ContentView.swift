@@ -16,8 +16,14 @@ struct ContentView: View {
     @State private  var scoreTitle = ""
     @State private var scoreMessage = ""
     
+    @State private var selectedFlag : Int?
+    
     @State private var score = 0
     @State private var showGameOver = false
+    
+    @State private var selectedFlagRotateAngle : Double = 0
+    @State private var selectedFlagScaleEffect = 1.0
+    
     var body: some View {
         ZStack {
             RadialGradient(stops: [
@@ -44,16 +50,32 @@ struct ContentView: View {
                     
                     ForEach(0..<3){ number in
                         Button{
-                            flagTapped(number)
-                        }label: {
+                        flagTapped(number)
+                        animateFlag(number)
+                           
+                         }label: {
                             FlagView(country: countries[number])
-                        }
+                         }
+                         .rotation3DEffect(Angle(degrees: selectedFlag == number ? selectedFlagRotateAngle  : 0  ), axis: (x: 0, y: 1, z: 0) )
+                         .opacity(selectedFlag == nil ||  selectedFlag ==  number ? 1: 0.25)
+                         .scaleEffect(selectedFlag == nil ||  selectedFlag ==  number ?
+                                      selectedFlagScaleEffect: selectedFlagScaleEffect - 1)
+                         
+                        
+                         
+                         
+                        
+                        
+                        
+                        
+                    
                         
                     }.alert(scoreTitle, isPresented: $showingScore){
                     
                     
                         Button{
                             askAnotherQuestion()
+                           
                         } label: {
                             Text("Continue")
                         }
@@ -85,6 +107,15 @@ struct ContentView: View {
         }
         
     }
+    
+    func animateFlag(_ number: Int)  {
+       
+        selectedFlag = number
+        withAnimation{
+            selectedFlagRotateAngle += 360
+            selectedFlagScaleEffect = 1.5
+        }
+    }
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
             scoreTitle = "Correct"
@@ -109,7 +140,8 @@ struct ContentView: View {
         }else{
             showGameOver = true
         }
-        
+        selectedFlag = nil
+        selectedFlagScaleEffect = 1
     }
     
     func reset() {
